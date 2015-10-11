@@ -123,59 +123,19 @@ function registerwithoutemail_civicrm_alterSettingsFolders(&$metaDataFolders = N
 }
 
 /**
- * Implements hook_civicrm_preProcess().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
- *
- */
-function registerwithoutemail_civicrm_preProcess($formName, &$form) {
-//error_log("preProcess");
-//error_log($formName);
-
-}
-
-
-/**
- * Implementation of hook_civicrm_postProcess
- */
-function registerwithoutemail_civicrm_postProcess( $formName, &$form ) {
-//error_log($formName);
-  if ($formName == 'CRM_Event_Form_Registration_Confirm') {
-    $params = $form->get('params');
-//error_log(print_r($params, true));
-    foreach($params AS &$param) {
-//      error_log(print_r($param['email-Primary'], true));
-      if (!isset($param['email-Primary'])) {
-        $param['email-Primary'] =  time() . '_' . rand() . "@example.com";
-      } else if (is_null($param['email-Primary'])) {
-        $param['email-Primary'] = "isnull@example.com";
-      } else if ($param['email-Primary'] == "") {
-        $param['email-Primary'] = "isblank@example.com";
-      }      
-    }
-//error_log(print_r($params, true));
-
-    $form->set('params', $params);
-  }
-}
-/**
  * Implementation of hook_civicrm_validateForm
  */
 function registerwithoutemail_civicrm_validateForm( $formName, &$fields, &$files, &$form, &$errors ) {
-error_log($formName);
   if ($formName == 'CRM_Event_Form_Registration_AdditionalParticipant') {
-//error_log(print_r($fields, true));
     if (!isset($fields['email-Primary'])) {
       $fields['email-Primary'] =  time() . '_' . rand() . "@example.com";
     }
 
     $fields['first_name'] = "Overridden";
-//error_log(print_r($fields, true));
+
     $params = $form->get('params');
-//error_log(print_r($params, true));
+
     foreach($params AS &$param) {
-//error_log('checking in validate');
-      error_log(print_r($param['email-Primary'], true));
       if (!isset($param['email-Primary'])) {
         $param['email-Primary'] =  time() . '_' . rand() . "@example.com";
       } else if (is_null($param['email-Primary'])) {
@@ -184,27 +144,18 @@ error_log($formName);
         $param['email-Primary'] = "isblank@example.com";
       }      
     }
-//error_log(print_r($params, true));
 
     $form->set('params', $params);
 
-$data = &$form->controller->container();              
-error_log(print_r($data['values'], true));
-//$data['values']['Main'][$fieldName] = $newvalue;
+    $data = &$form->controller->container();              
 
-    foreach($data['values'] AS $key => &$value) {
-      if ($key == 'Participant_1') {
-        if (!isset($value['email-Primary'])) {
-          $value['email-Primary'] =  time() . '_' . rand() . "@example.com";
-        }
-      }
-      if ($key == 'Participant_2') {
-        if (!isset($value['email-Primary'])) {
-          $value['email-Primary'] =  time() . '_' . rand() . "@example.com";
-        }
+    $additional_participants = $data['values']['Register']['additional_participants'];
+
+    for ($i = 1; $i <= $data['values']['Register']['additional_participants']; $i++) {
+      if (!isset($data['values']['Participant_'.$i]['email-Primary'])) {
+        $data['values']['Participant_'.$i]['email-Primary'] = time() . '_' . rand() . "@example.com";
       }
     }
-
   }
   return;
 }
