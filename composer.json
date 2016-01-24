@@ -1,0 +1,17 @@
+{
+    "name": "teamsinger/uk.teamsinger.civicrm.registerwithoutemail",
+    "type": "civicrm-extension",
+    "license": "MIT",
+    "description": "CiviCRM extension to set additional participants emails to @example.com if field not set",
+    "homepage": "https://github.com/teamsinger/uk.teamsinger.civicrm.registerwithoutemail",
+    "authors": [
+        {
+            "name": "Tom Singer",
+            "email": "tomsinger@gmail.com",
+            "homepage": "https://github.com/tomsinger"
+        }
+    ],
+    "require": {
+        "composer/installers": "dev-civicrm"
+    }
+}
